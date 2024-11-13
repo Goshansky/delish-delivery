@@ -1,0 +1,19 @@
+.restaurant-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px; /* Отступы между карточками */
+}
+
+.restaurant-card {
+    flex: 1 1 calc(25% - 20px); /* 4 карточки в ряд с отступами */
+    border: 1px solid #ccc;
+    padding: 10px;
+    text-align: center;
+    box-sizing: border-box;
+    max-width: calc(25% - 20px); /* Ограничение ширины карточки */
+}
+
+.restaurant-card img {
+    max-width: 80%;
+    height: auto;
+}
