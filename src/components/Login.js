@@ -6,14 +6,36 @@ const Login = () => {
     const [password, setPassword] = useState('');
     const navigate = useNavigate();
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        // Здесь можно добавить логику проверки пользователя
-        // Например, проверка на сервере или локальная проверка
-        if (username === 'user' && password === 'password') {
-            navigate('/');
-        } else {
-            alert('Неверное имя пользователя или пароль');
+
+        const userData = {
+            username,
+            password,
+        };
+
+        try {
+            const response = await fetch('http://localhost:8080/auth', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+
+                },
+                mode: 'cors',
+                body: JSON.stringify(userData),
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                localStorage.setItem('token', data.token); // Сохраняем JWT токен в localStorage
+                alert('Авторизация успешна!');
+                navigate('/'); // Перенаправление на главную страницу после успешной авторизации
+            } else {
+                alert('Неверное имя пользователя или пароль');
+            }
+        } catch (error) {
+            console.error('Ошибка при отправке запроса:', error);
+            alert('Ошибка при отправке запроса');
         }
     };
 

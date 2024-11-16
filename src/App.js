@@ -49,13 +49,6 @@ const orders = [
     // Добавь другие заказы
 ];
 
-const user = {
-    username: 'user123',
-    email: 'user123@example.com',
-    registrationDate: '2023-01-01',
-    // Добавь другие поля, если необходимо
-};
-
 const App = () => {
     return (
         <Router>
@@ -68,7 +61,7 @@ const App = () => {
                         <Route path="/login" element={<Login />} />
                         <Route path="/register" element={<Register />} />
                         <Route path="/orders" element={<Orders orders={orders} />} />
-                        <Route path="/account" element={<Account user={user} />} />
+                        <Route path="/account" element={<Account />} />
                     </Routes>
                 </main>
                 <Footer />
