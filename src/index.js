@@ -8,6 +8,7 @@ import './css/restaurant.css';
 import './css/login.css';
 import './css/account.css';
 import './css/orders.css';
+import './css/delivery.css';
 import './index.css';
 import App from './App';
 

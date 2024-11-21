@@ -9,45 +9,7 @@ import Login from './components/Login';
 import Register from './components/Register';
 import Orders from './components/Orders';
 import Account from './components/Account';
-
-const restaurants = [
-    { id: 1, name: 'Ресторан 1', image: './img/cubok.jpg' },
-    { id: 2, name: 'Ресторан 2', image: '' },
-    { id: 2, name: 'Ресторан 2', image: '' },
-    { id: 2, name: 'Ресторан 2', image: '' },
-    { id: 2, name: 'Ресторан 2', image: '' },
-    { id: 2, name: 'Ресторан 2', image: '' },
-    // Добавь другие рестораны
-];
-
-const menuItems = [
-    { id: 1, name: 'Блюдо 1', description: 'Описание блюда 1', price: 100 },
-    { id: 2, name: 'Блюдо 2', description: 'Описание блюда 2', price: 200 },
-    // Добавь другие блюда
-];
-
-const orders = [
-    {
-        id: 1,
-        restaurant: 'Ресторан 1',
-        total: 300,
-        date: '2023-10-01',
-        items: [
-            { id: 1, name: 'Блюдо 1', quantity: 2 },
-            { id: 2, name: 'Блюдо 2', quantity: 1 },
-        ],
-    },
-    {
-        id: 2,
-        restaurant: 'Ресторан 2',
-        total: 200,
-        date: '2023-10-02',
-        items: [
-            { id: 1, name: 'Блюдо 1', quantity: 2 },
-        ],
-    },
-    // Добавь другие заказы
-];
+import Delivery from './components/Delivery';
 
 const App = () => {
     return (
@@ -56,12 +18,13 @@ const App = () => {
                 <Header />
                 <main>
                     <Routes>
-                        <Route path="/" element={<RestaurantList restaurants={restaurants} />} />
-                        <Route path="/menu/:id" element={<Menu menuItems={menuItems} />} />
+                        <Route path="/" element={<RestaurantList />} />
+                        <Route path="/menu/:id" element={<Menu />} />
                         <Route path="/login" element={<Login />} />
                         <Route path="/register" element={<Register />} />
-                        <Route path="/orders" element={<Orders orders={orders} />} />
+                        <Route path="/orders" element={<Orders />} />
                         <Route path="/account" element={<Account />} />
+                        <Route path="/delivery" element={<Delivery />} />
                     </Routes>
                 </main>
                 <Footer />

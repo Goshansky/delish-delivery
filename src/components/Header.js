@@ -14,6 +14,7 @@ const Header = () => {
                 <button className="header-button">Укажите адрес доставки</button>
                 <nav className="header-nav">
                     <ul>
+                        <li><a href="/delivery">Доставка</a></li>
                         <li><a href="/orders">Заказы</a></li>
                         <li><a href="/login">Авторизация</a></li>
                         <li><a href="/account">Аккаунт</a></li>
