@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 
 const Delivery = () => {
     const [orders, setOrders] = useState([]);
+    const [deliveries, setDeliveries] = useState([]);
 
     useEffect(() => {
         const fetchOrders = async () => {
@@ -27,37 +28,83 @@ const Delivery = () => {
         fetchOrders();
     }, []);
 
-    const updateOrderStatus = async (orderId, status) => {
+    useEffect(() => {
+        const fetchDeliveries = async () => {
+            try {
+                const response = await fetch('http://localhost:8084/api/deliveries', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    setDeliveries(data);
+                } else {
+                    console.error('Ошибка при получении данных о доставках');
+                }
+            } catch (error) {
+                console.error('Ошибка при отправке запроса:', error);
+            }
+        };
+
+        fetchDeliveries();
+    }, []);
+
+    const takeOrder = async (orderId) => {
         try {
             const response = await fetch(`http://localhost:8084/api/deliveries/${orderId}/status`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ status }),
+                body: JSON.stringify({ status: 'DELIVERY' }),
             });
 
             if (response.ok) {
-                const updatedOrders = orders.map(order =>
-                    order.id === orderId ? { ...order, status } : order
-                );
-                setOrders(updatedOrders);
-                alert(`Статус заказа ${orderId} обновлен на ${status}`);
+                alert(`Заказ ${orderId} взят в доставку`);
+                // Обновить статус заказа в состоянии
+                setDeliveries(deliveries.map(delivery =>
+                    delivery.orderId === orderId ? { ...delivery, status: 'DELIVERY' } : delivery
+                ));
             } else {
-                alert('Ошибка при обновлении статуса заказа');
+                alert('Ошибка при взятии заказа в доставку');
             }
         } catch (error) {
             console.error('Ошибка при отправке запроса:', error);
-            alert('Ошибка при обновлении статуса заказа');
+            alert('Ошибка при взятии заказа в доставку');
         }
     };
 
-    const takeOrder = (orderId) => {
-        updateOrderStatus(orderId, 'DELIVERE');
+    const deliverOrder = async (orderId) => {
+        try {
+            const response = await fetch(`http://localhost:8084/api/deliveries/${orderId}/status`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ status: 'DELIVERED' }),
+            });
+
+            if (response.ok) {
+                alert(`Заказ ${orderId} доставлен`);
+                // Обновить статус заказа в состоянии
+                setDeliveries(deliveries.map(delivery =>
+                    delivery.orderId === orderId ? { ...delivery, status: 'DELIVERED' } : delivery
+                ));
+            } else {
+                alert('Ошибка при доставке заказа');
+            }
+        } catch (error) {
+            console.error('Ошибка при отправке запроса:', error);
+            alert('Ошибка при доставке заказа');
+        }
     };
 
-    const deliverOrder = (orderId) => {
-        updateOrderStatus(orderId, 'DELIVERED');
+    const getDeliveryStatus = (orderId) => {
+        const delivery = deliveries.find(delivery => delivery.orderId === orderId);
+        return delivery ? delivery.status : 'Неизвестно';
     };
 
     return (
@@ -71,11 +118,11 @@ const Delivery = () => {
                         <li key={order.id}>
                             <h3>Заказ #{order.id}</h3>
                             <p>Адрес доставки: {order.deliveryAddress}</p>
-                            <p>Статус: {order.status}</p>
+                            <p>Статус: {getDeliveryStatus(order.id)}</p>
                             <ul>
-                                {order.orderItems.map(item => (
+                                {order.items.map(item => (
                                     <li key={item.id}>
-                                        {item.menuId} - {item.quantity} шт.
+                                        {item.name} - {item.quantity} шт.
                                     </li>
                                 ))}
                             </ul>

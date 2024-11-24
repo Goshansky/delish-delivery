@@ -17,7 +17,7 @@ const Orders = () => {
                     const data = await response.json();
                     setOrders(data);
                 } else {
-                    console.error('Ошибка при получении списка заказов');
+                    console.error('Ошибка при получении заказов');
                 }
             } catch (error) {
                 console.error('Ошибка при отправке запроса:', error);
@@ -40,12 +40,13 @@ const Orders = () => {
                             <p>Адрес доставки: {order.deliveryAddress}</p>
                             <p>Статус: {order.status}</p>
                             <ul>
-                                {order.orderItems.map(item => (
+                                {order.items.map(item => (
                                     <li key={item.id}>
-                                        {item.menuId} - {item.quantity} шт.
+                                        {item.name} - {item.quantity} шт.
                                     </li>
                                 ))}
                             </ul>
+                            <p>Итоговая стоимость: {order.totalPrice} руб.</p>
                         </li>
                     ))}
                 </ul>

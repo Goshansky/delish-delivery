@@ -7,6 +7,7 @@ const Menu = () => {
     const { id } = useParams();
     const [menuItems, setMenuItems] = useState([]);
     const [cartItems, setCartItems] = useState([]);
+    const [restaurantName, setRestaurantName] = useState('ПИПИПУПУ');
 
     useEffect(() => {
         const fetchMenuItems = async () => {
@@ -21,6 +22,8 @@ const Menu = () => {
                 if (response.ok) {
                     const data = await response.json();
                     setMenuItems(data);
+                    setRestaurantName(data[0].restaurant.name);
+                    console.log(data);
                 } else {
                     console.error('Ошибка при получении меню ресторана');
                 }
@@ -66,7 +69,7 @@ const Menu = () => {
                 id: item.id,
                 quantity: item.quantity,
             })),
-            deliveryAddress: "Адрес доставки",
+            deliveryAddress: restaurantName,
         };
 
         try {
@@ -93,7 +96,7 @@ const Menu = () => {
     return (
         <div className="menu-container">
             <div className="menu">
-                <h2>Меню ресторана {id}</h2>
+                <h2>Меню ресторана {restaurantName}</h2>
                 <div className="menu-list">
                     {menuItems.map(item => (
                         <MenuCard key={item.id} item={item} onAddToCart={addToCart} />
