@@ -2,12 +2,15 @@ import React, { useEffect, useState } from 'react';
 
 const Account = () => {
     const [user, setUser] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
         const fetchUserInfo = async () => {
             const token = localStorage.getItem('token');
             if (!token) {
                 alert('Пользователь не авторизован');
+                setLoading(false);
                 return;
             }
 
@@ -16,32 +19,36 @@ const Account = () => {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`, // Добавляем JWT-токен
+                        'Authorization': `Bearer ${token}`,
                     },
                     mode: 'cors',
                 });
 
                 if (response.ok) {
-                    const data = await response.text(); // Используем text() для получения ответа в виде строки
-                    console.log('Response data:', data); // Логируем ответ
-                    const parsedData = JSON.parse(data); // Пытаемся распарсить ответ как JSON
-                    setUser(parsedData);
+                    const data = await response.json();
+                    setUser(data);
                 } else {
-                    const errorText = await response.text(); // Логируем текст ошибки
+                    const errorText = await response.text();
                     console.error('Error response:', errorText);
-                    alert('Ошибка при получении информации о пользователе');
+                    setError('Ошибка при получении информации о пользователе');
                 }
             } catch (error) {
                 console.error('Ошибка при отправке запроса:', error);
-                alert('Ошибка при отправке запроса');
+                setError('Ошибка при отправке запроса');
+            } finally {
+                setLoading(false);
             }
         };
 
         fetchUserInfo();
     }, []);
 
-    if (!user) {
+    if (loading) {
         return <div>Загрузка...</div>;
+    }
+
+    if (error) {
+        return <div>{error}</div>;
     }
 
     return (

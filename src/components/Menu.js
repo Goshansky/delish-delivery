@@ -3,11 +3,13 @@ import { useParams } from 'react-router-dom';
 import MenuCard from './MenuCard';
 import Cart from './Cart';
 
-const Menu = () => {
+const Menu = ({ userRole }) => {
     const { id } = useParams();
     const [menuItems, setMenuItems] = useState([]);
     const [cartItems, setCartItems] = useState([]);
     const [restaurantName, setRestaurantName] = useState('ПИПИПУПУ');
+    const [user, setUser] = useState(null);
+    const [restaurant, setRestaurant] = useState(null);
 
     useEffect(() => {
         const fetchMenuItems = async () => {
@@ -32,7 +34,57 @@ const Menu = () => {
             }
         };
 
+        const fetchUserInfo = async () => {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                alert('Пожалуйста, авторизуйтесь для создания заказа');
+                return;
+            }
+
+            try {
+                const response = await fetch('http://localhost:8080/info', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`,
+                    },
+                    mode: 'cors',
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    setUser(data);
+                } else {
+                    console.error('Ошибка при получении информации о пользователе');
+                }
+            } catch (error) {
+                console.error('Ошибка при отправке запроса:', error);
+            }
+        };
+
+        const fetchRestaurantInfo = async () => {
+            try {
+                const response = await fetch(`http://localhost:8081/api/restaurants/${id}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    setRestaurant(data);
+                } else {
+                    console.error('Ошибка при получении информации о ресторане');
+                }
+            } catch (error) {
+                console.error('Ошибка при отправке запроса:', error);
+            }
+        };
+
         fetchMenuItems();
+        fetchUserInfo();
+        fetchRestaurantInfo();
     }, [id]);
 
     const addToCart = (item) => {
@@ -63,13 +115,25 @@ const Menu = () => {
     };
 
     const createOrder = async () => {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            alert('Пожалуйста, авторизуйтесь для создания заказа');
+            return;
+        }
+
+        if (!user || !restaurant) {
+            alert('Ошибка при получении информации о пользователе или ресторане');
+            return;
+        }
+
         const orderData = {
-            userId: 1,
+            userId: user.id,
+            deliveryAddress: user.address,
+            restaurantAddress: restaurant.address,
             items: cartItems.map(item => ({
                 id: item.id,
                 quantity: item.quantity,
             })),
-            deliveryAddress: restaurantName,
         };
 
         try {
@@ -77,6 +141,7 @@ const Menu = () => {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
                 },
                 body: JSON.stringify(orderData),
             });
@@ -108,10 +173,11 @@ const Menu = () => {
                 onIncrease={increaseQuantity}
                 onDecrease={decreaseQuantity}
                 onRemove={removeFromCart}
-                onCreateOrder={createOrder}
+                onCreateOrder={userRole !== 'ROLE_DELIVERY' ? createOrder : null}
             />
         </div>
     );
 };
 
 export default Menu;
+

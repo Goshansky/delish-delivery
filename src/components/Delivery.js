@@ -3,6 +3,38 @@ import React, { useEffect, useState } from 'react';
 const Delivery = () => {
     const [orders, setOrders] = useState([]);
     const [deliveries, setDeliveries] = useState([]);
+    const [user, setUser] = useState(null);
+
+    useEffect(() => {
+        const fetchUserInfo = async () => {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                return;
+            }
+
+            try {
+                const response = await fetch('http://localhost:8080/info', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`,
+                    },
+                    mode: 'cors',
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    setUser(data);
+                } else {
+                    console.error('Ошибка при получении информации о пользователе');
+                }
+            } catch (error) {
+                console.error('Ошибка при отправке запроса:', error);
+            }
+        };
+
+        fetchUserInfo();
+    }, []);
 
     useEffect(() => {
         const fetchOrders = async () => {
@@ -53,13 +85,18 @@ const Delivery = () => {
     }, []);
 
     const takeOrder = async (orderId) => {
+        if (!user) {
+            alert('Ошибка при получении информации о пользователе');
+            return;
+        }
+
         try {
             const response = await fetch(`http://localhost:8084/api/deliveries/${orderId}/status`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ status: 'DELIVERY' }),
+                body: JSON.stringify({ status: 'DELIVERY', deliverer_id: user.id }),
             });
 
             if (response.ok) {
@@ -78,13 +115,18 @@ const Delivery = () => {
     };
 
     const deliverOrder = async (orderId) => {
+        if (!user) {
+            alert('Ошибка при получении информации о пользователе');
+            return;
+        }
+
         try {
             const response = await fetch(`http://localhost:8084/api/deliveries/${orderId}/status`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ status: 'DELIVERED' }),
+                body: JSON.stringify({ status: 'DELIVERED', deliverer_id: user.id }),
             });
 
             if (response.ok) {

@@ -30,6 +30,7 @@ const Login = () => {
                 localStorage.setItem('token', data.token); // Сохраняем JWT токен в localStorage
                 alert('Авторизация успешна!');
                 navigate('/'); // Перенаправление на главную страницу после успешной авторизации
+                window.location.reload();
             } else {
                 alert('Неверное имя пользователя или пароль');
             }

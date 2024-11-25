@@ -25,7 +25,7 @@ const Cart = ({ cartItems, onIncrease, onDecrease, onRemove, onCreateOrder }) =>
                         ))}
                     </ul>
                     <p>Итоговая стоимость: {totalPrice} руб.</p>
-                    <button onClick={onCreateOrder}>Создать заказ</button>
+                    {onCreateOrder && <button onClick={onCreateOrder}>Создать заказ</button>}
                 </>
             )}
         </div>

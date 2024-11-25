@@ -10,6 +10,7 @@ const Register = () => {
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [email, setEmail] = useState('');
+    const [deliveryAddress, setDeliveryAddress] = useState('');
     const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
@@ -30,6 +31,7 @@ const Register = () => {
             password: password,
             confirmPassword: confirmPassword,
             email: email,
+            address: deliveryAddress,
         };
 
         try {
@@ -108,6 +110,15 @@ const Register = () => {
                         type="email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
+                        required
+                    />
+                </div>
+                <div>
+                    <label>Адрес доставки:</label>
+                    <input
+                        type="text"
+                        value={deliveryAddress}
+                        onChange={(e) => setDeliveryAddress(e.target.value)}
                         required
                     />
                 </div>

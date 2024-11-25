@@ -2,14 +2,61 @@ import React, { useEffect, useState } from 'react';
 
 const Orders = () => {
     const [orders, setOrders] = useState([]);
+    const [user, setUser] = useState(null);
 
     useEffect(() => {
-        const fetchOrders = async () => {
+        const fetchUserInfo = async () => {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                return;
+            }
+
             try {
-                const response = await fetch('http://localhost:8083/api/orders', {
+                const response = await fetch('http://localhost:8080/info', {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`,
+                    },
+                    mode: 'cors',
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    setUser(data);
+                } else {
+                    console.error('Ошибка при получении информации о пользователе');
+                }
+            } catch (error) {
+                console.error('Ошибка при отправке запроса:', error);
+            }
+        };
+
+        fetchUserInfo();
+    }, []);
+
+    useEffect(() => {
+        const fetchOrders = async () => {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                return;
+            }
+
+            let url;
+            if (user && user.roles[0].name === 'ROLE_ADMIN') {
+                url = 'http://localhost:8083/api/orders';
+            } else if (user && user.roles[0].name === 'ROLE_USER') {
+                url = `http://localhost:8083/api/orders/user/${user.id}`;
+            } else {
+                return;
+            }
+
+            try {
+                const response = await fetch(url, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`,
                     },
                 });
 
@@ -24,8 +71,10 @@ const Orders = () => {
             }
         };
 
-        fetchOrders();
-    }, []);
+        if (user) {
+            fetchOrders();
+        }
+    }, [user]);
 
     return (
         <div className="orders">
@@ -56,3 +105,4 @@ const Orders = () => {
 };
 
 export default Orders;
+
