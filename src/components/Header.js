@@ -10,8 +10,8 @@ const Header = ({ userRole }) => {
                     <img src={logo} alt="Иконка сайта" className="header-icon" />
                     <span className="header-text">Delish Delivery</span>
                 </Link>
-                <input type="text" placeholder="Поиск ресторана" className="header-search" />
-                <button className="header-button">Укажите адрес доставки</button>
+                {/*<input type="text" placeholder="Поиск ресторана" className="header-search" />*/}
+                {/*<button className="header-button">Укажите адрес доставки</button>*/}
                 <nav className="header-nav">
                     <ul>
                         {(userRole === 'ROLE_DELIVERY' || userRole === 'ROLE_ADMIN') && <li><a href="/delivery">Доставка</a></li>}

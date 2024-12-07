@@ -1,11 +1,12 @@
 .header {
-    background-color: #333;
+    background: rgb(63, 175, 236);
     color: #fff;
     padding: 10px 20px;
     display: flex;
     align-items: center;
     justify-content: space-between;
     margin-bottom: 20px; /* Отступ между хедером и основной частью */
+    height: 50px;
 }
 
 .header-content {

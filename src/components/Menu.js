@@ -164,7 +164,7 @@ const Menu = ({ userRole }) => {
                 <h2>Меню ресторана {restaurantName}</h2>
                 <div className="menu-list">
                     {menuItems.map(item => (
-                        <MenuCard key={item.id} item={item} onAddToCart={addToCart} />
+                        <MenuCard key={item.id} restaurantId={id} item={item} onAddToCart={addToCart} />
                     ))}
                 </div>
             </div>

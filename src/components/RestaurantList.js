@@ -34,7 +34,7 @@ const RestaurantList = () => {
     return (
         <div className="restaurant-list">
             {restaurants.map(restaurant => (
-                <RestaurantCard key={restaurant.id} restaurant={restaurant} />
+                <RestaurantCard key={restaurant.id} restaurant={restaurant}/>
             ))}
         </div>
     );

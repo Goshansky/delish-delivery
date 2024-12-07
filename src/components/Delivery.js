@@ -157,7 +157,7 @@ const Delivery = () => {
             ) : (
                 <ul>
                     {orders.map(order => (
-                        <li key={order.id}>
+                        <li key={order.id} className={`delivery-item ${getDeliveryStatus(order.id).toLowerCase()}`}>
                             <h3>Заказ #{order.id}</h3>
                             <p>Адрес доставки: {order.deliveryAddress}</p>
                             <p>Статус: {getDeliveryStatus(order.id)}</p>
